@@ -10,18 +10,20 @@
       Limiting to localhost communication, since all nodes are expected to run on the same machine.
       If this is not the case, change the address to the IP address of the host on the desired interface.
       https://cyclonedds.io/docs/cyclonedds/latest/config/network_interfaces.html
+
+      Multicast is recommended for discovery: https://cyclonedds.io/docs/cyclonedds/latest/config/multicasting.html
+      Linux loopback supports multicast but does not set IFF_MULTICAST, which Cyclone checks, so force it here.
        -->
       <Interfaces>
-        <NetworkInterface autodetermine="false" address="127.0.0.1"/>
+        <NetworkInterface autodetermine="false" address="127.0.0.1" multicast="true"/>
       </Interfaces>
+      <!--
+      Limit multicast to participant discovery, so user data (e.g. expensive camera frames) stays unicast.
+       -->
+      <AllowMulticast>spdp</AllowMulticast>
       <!-- https://www.stereolabs.com/docs/ros2/dds-and-network-tuning -->
       <MaxMessageSize>65500B</MaxMessageSize>
     </General>
-    <!-- Increase participant index range to not run into problems when nodes frequently restart -->
-    <Discovery>
-      <ParticipantIndex>auto</ParticipantIndex>
-      <MaxAutoParticipantIndex>10000</MaxAutoParticipantIndex>
-    </Discovery>
     <Internal>
       <!-- https://www.stereolabs.com/docs/ros2/dds-and-network-tuning -->
       <SocketReceiveBufferSize min="10MB" />
