@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.1] - UNRELEASED
+
+- Fixed sporadic `libfranka: incorrect object size` errors that aborted one or both arms on roughly half of all
+  `franka-robot` restarts. With `MaxAutoParticipantIndex` set to 10000, Cyclone DDS' fallback to unicast participant
+  discovery pinged ports overlapping the kernel's ephemeral range, where the packets landed in libfranka's robot state
+  socket and were rejected as wrongly sized. Deployments should update their `cyclonedds.xml` (see migration notes).
+
+### Migration notes
+
+1. Recommended: align `cyclonedds.xml` in your deployments with `deployments/fr3_duo_example/cyclonedds.xml`:
+   - Remove the `<Discovery>` block; the default participant index range avoids the ephemeral port overlap.
+   - Add `multicast="true"` to `NetworkInterface` and `<AllowMulticast>spdp</AllowMulticast>` to `<General>` to use
+     multicast for participant discovery while keeping user data on unicast.
+
 ## [0.2.0] - 2026-09-03
 
 - **Breaking Change:** Removed PostgreSQL database from the data-collection service. Episode management now relies
