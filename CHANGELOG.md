@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.1] - UNRELEASED
+## [0.2.1] - 2026-09-10
 
 - Fixed sporadic `libfranka: incorrect object size` errors that aborted one or both arms on roughly half of all
   `franka-robot` restarts. With `MaxAutoParticipantIndex` set to 10000, Cyclone DDS' fallback to unicast participant
